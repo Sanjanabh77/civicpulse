@@ -1,6 +1,14 @@
-import './App.css'
+import './App.css';
+import { Routes, Route } from 'react-router-dom';
+import MapPage from './pages/map/MapPage.jsx';
+import TrackingPage from './pages/tracking/TrackingPage.jsx';
+import RequireRole from './components/common/RequireRole.jsx';
+import OfficerDashboard from './pages/officer/OfficerDashboard.jsx';
+import AdminDashboard from './pages/admin/AdminDashboard.jsx';
+import AnalyticsPage from './pages/admin/AnalyticsPage.jsx';
+import WardScorecardsPage from './pages/public/WardScorecardsPage.jsx';
 
-function App() {
+function HomePage() {
   return (
     <div className="app">
 
@@ -246,7 +254,42 @@ function App() {
       </footer>
 
     </div>
-  )
+  );
 }
 
-export default App
+function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<HomePage />} />
+      <Route path="/map" element={<MapPage />} />
+      <Route path="/scorecards" element={<WardScorecardsPage />} />
+      <Route path="/reports/:id/track" element={<TrackingPage />} />
+      <Route
+        path="/officer"
+        element={
+          <RequireRole roles={['officer', 'admin']}>
+            <OfficerDashboard />
+          </RequireRole>
+        }
+      />
+      <Route
+        path="/admin"
+        element={
+          <RequireRole roles={['admin']}>
+            <AdminDashboard />
+          </RequireRole>
+        }
+      />
+      <Route
+        path="/admin/analytics"
+        element={
+          <RequireRole roles={['officer', 'admin']}>
+            <AnalyticsPage />
+          </RequireRole>
+        }
+      />
+    </Routes>
+  );
+}
+
+export default App;
